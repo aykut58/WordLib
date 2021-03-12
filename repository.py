@@ -1,5 +1,5 @@
 from db import db
-from model import User
+from model import User,Category
 
 class UserRepository:
 
@@ -33,3 +33,24 @@ class UserRepository:
     
     def delete_by_id(self,id):
         db.session.query(User).filter_by(id=id).delete()
+
+class CategoryRepository:
+
+    def get_all(self):
+        return db.session.query(Category).all()
+    
+    def get_by_id(self,id):
+        return db.session.query(Category).filter_by(id=id).one()
+    
+    def add(self,category):
+        category=db.session.merge(category)
+        db.session.commit()
+        return category
+    
+    def update(self,category):
+        category=db.session.merge(category)
+        db.session.commit()
+        return category
+    
+    def delete_by_id(self,id):
+        db.session.query(Category).filter_by(id=id).delete()
