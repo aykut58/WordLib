@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask
 from db import db,db_url
 from model import User
 from api import register_blueprint
