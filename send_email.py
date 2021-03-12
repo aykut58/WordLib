@@ -2,7 +2,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_email(receiver,content):
+def send_email(receiver,content,subject):
     email="michael.wings.red@outlook.com"
     password="mchl2004"
     smtp=smtplib.SMTP('smtp.office365.com',587)
@@ -11,7 +11,7 @@ def send_email(receiver,content):
     message=MIMEMultipart()
     message["From"]=email
     message["To"]=receiver
-    message["Subject"]="Email Confirmation"
+    message["Subject"]=subject
     message.attach(MIMEText(content,"html"))
     smtp.send_message(message)
     smtp.quit()

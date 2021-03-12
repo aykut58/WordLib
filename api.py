@@ -49,7 +49,7 @@ def register():
                     <h1>Wordlib</h1>
                     <a href='http://34.201.148.42:5000/activate/"""+username+"""'>Click Here To Activate</a>
                 """
-                send_email(email,content)
+                send_email(email,content,"Email Confirmation")
                 return jsonify({"Message":"Successful"})
             return jsonify({"Error Message":"Another User uses this email"}),400
         return jsonify({"Error Message":"Another User uses this username"}),400
