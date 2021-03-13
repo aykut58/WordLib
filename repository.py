@@ -9,6 +9,9 @@ class UserRepository:
     def exists_by_email(self,email):
         return db.session.query(User).filter_by(email=email).scalar() is not None
 
+    def exists_by_id(self,id):
+        return db.session.query(User).filter_by(id=id).scalar() is not None
+
     def get_all(self):
         return db.session.query(User).all()
     
