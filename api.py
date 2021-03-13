@@ -53,10 +53,10 @@ class Register:
                 if not user_repository.exists_by_email(email):
                     password=hash_password(password)
                     user=User(username=username,password=password,email=email,is_active=False)
-                    user_repository.add(user)
+                    user=user_repository.add(user)
                     content="""
                         <h1>Wordlib</h1>
-                        <a href='http://34.201.148.42:5000/activate/"""+username+"""'>Click Here To Activate</a>
+                        <a href='http://34.201.148.42:5000/activate/"""+str(user.id)+"""'>Click Here To Activate</a>
                     """
                     send_email(email,content,"Email Confirmation")
                     return jsonify({"Message":"Successful"})
@@ -64,10 +64,10 @@ class Register:
             return jsonify({"Error Message":"Another User uses this username"}),400
         return jsonify({"Error Message":"Password are not same"}),400
 
-    @register_blueprint.route("/activate/<username>",methods=["GET"])
-    def activate_user(username):
-        if user_repository.exists_by_username(username):
-            user=user_repository.get_by_username(username)
+    @register_blueprint.route("/activate/<id>",methods=["GET"])
+    def activate_user(id):
+        if user_repository.exists_by_id(id):
+            user=user_repository.get_by_id(id)
             user.is_active=True
             user_repository.update(user)
             return jsonify({"Message":"Succesful"})
