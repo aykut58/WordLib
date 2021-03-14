@@ -15,3 +15,10 @@ def send_email(receiver,content,subject):
     message.attach(MIMEText(content,"html"))
     smtp.send_message(message)
     smtp.quit()
+
+def send_activation_mail(receiver,user):
+    content="""
+        <h1>Wordlib</h1>
+        <a href='http://wordlib-env.eba-qaxzbsq8.us-east-1.elasticbeanstalk.com/activate/"""+str(user.id)+"""'>Click Here To Activate</a>
+    """
+    send_email(receiver,content,"Email Confirmation")

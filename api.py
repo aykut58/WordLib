@@ -2,7 +2,7 @@ from flask import Blueprint,request,jsonify
 from repository import UserRepository,CategoryRepository
 from model import User,Category
 from security import create_token,hash_password
-from send_email import send_email
+from send_email import send_activation_mail
 
 category_blueprint=Blueprint("category",__name__)
 register_blueprint=Blueprint("register",__name__)
@@ -54,11 +54,7 @@ class Register:
                     password=hash_password(password)
                     user=User(username=username,password=password,email=email,is_active=False)
                     user=user_repository.add(user)
-                    content="""
-                        <h1>Wordlib</h1>
-                        <a href='http://34.201.148.42:5000/activate/"""+str(user.id)+"""'>Click Here To Activate</a>
-                    """
-                    send_email(email,content,"Email Confirmation")
+                    send_activation_mail(email,user)
                     return jsonify({"Message":"Successful"})
                 return jsonify({"Error Message":"Another User uses this email"}),400
             return jsonify({"Error Message":"Another User uses this username"}),400
