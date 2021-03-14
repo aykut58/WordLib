@@ -68,7 +68,7 @@ class Register:
             user_repository.update(user)
             return jsonify({"Message":"Succesful"})
         else:
-            return jsonify({"Message":"Username not Found"}),400
+            return jsonify({"Message":"User not Found"}),400
 
 class CategoryAPI:
     
