@@ -17,7 +17,7 @@ def create_token(username):
     return jwt.encode({"username":username,"exp":expire},token_key,token_algorithm)
 
 def token_filter():
-    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check":
+    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate"):
         if "token" in request.headers:
             try:
                 token=jwt.decode(request.headers.get("token"),token_key,token_algorithm)
@@ -26,9 +26,7 @@ def token_filter():
             except ExpiredSignatureError:
                 return jsonify({"Error Message":"Expired Token"}),401
             username=token.get("username")
-            if user_repository.exists_by_username(username):
-                user=user_repository.get_by_username(username)
-            else:
+            if not user_repository.exists_by_username(username):
                 return jsonify({"Error Message":"User not Found"}),401
         else:
             return jsonify({"Error Message":"Token not Found"}),401
