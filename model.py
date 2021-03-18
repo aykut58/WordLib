@@ -8,6 +8,9 @@ class User(db.Model):
     password=Column(String(128))
     is_active=Column(Boolean)
 
+    def to_json(self):
+        return {"id":self.id,"email":self.email,"username":self.username,"is_active":self.is_active}
+
 class Category(db.Model):
     id=Column(Integer,primary_key=True)
     name=Column(String(25),unique=True)
