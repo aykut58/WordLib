@@ -4,6 +4,7 @@ from model import User,Category
 from security import create_token,hash_password
 from send_email import send_activation_mail
 
+user_blueprint=Blueprint("user",__name__)
 category_blueprint=Blueprint("category",__name__)
 register_blueprint=Blueprint("register",__name__)
 user_repository=UserRepository()
@@ -96,3 +97,13 @@ class CategoryAPI:
     def delete_by_id(id):
         category_repository.delete_by_id(id)
         return jsonify({"Message":"Succesful"})
+
+class UserAPI:
+    
+    @user_blueprint.route("/user",methods=["GET"])
+    def get_all():
+        return jsonify(model_to_json(user_repository.get_all()))
+    
+    @user_blueprint.route("/user/<id>",methods=["GET"])
+    def get_by_id(id):
+        return jsonify(model_to_json(user_repository.get_by_id(id)))
