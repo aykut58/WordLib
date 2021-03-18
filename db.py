@@ -9,7 +9,6 @@ else:
     host="localhost"
     password="password"
 db_url="mysql+mysqlconnector://root:"+password+"@"+host+":3306/wordlib"
-print(db_url)
 db=SQLAlchemy()
 if not database_exists(db_url):
     create_database(db_url)
