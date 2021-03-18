@@ -91,3 +91,8 @@ class CategoryAPI:
         data=request.get_json()
         category=Category(name=data["name"],id=data["id"])
         return jsonify(model_to_json(category_repository.update(category)))
+    
+    @category_blueprint.route("/category/<id>",methods=["DELETE"])
+    def delete_by_id(id):
+        category_repository.delete_by_id(id)
+        return jsonify({"Message":"Succesful"})
