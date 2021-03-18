@@ -11,6 +11,14 @@ class User(db.Model):
     def to_json(self):
         return {"id":self.id,"email":self.email,"username":self.username,"is_active":self.is_active}
 
+class Admin(db.Model):
+    id=Column(Integer,primary_key=True)
+    username=Column(String(30),unique=True)
+    password=Column(String(128))
+
+    def to_json(self):
+        return {"id":self.id,"username":self.username}
+
 class Category(db.Model):
     id=Column(Integer,primary_key=True)
     name=Column(String(25),unique=True)

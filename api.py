@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from repository import UserRepository,CategoryRepository
+from repository import UserRepository,CategoryRepository,AdminRepository
 from model import User,Category
 from security import create_token,hash_password
 from send_email import send_activation_mail
@@ -7,8 +7,10 @@ from send_email import send_activation_mail
 user_blueprint=Blueprint("user",__name__)
 category_blueprint=Blueprint("category",__name__)
 register_blueprint=Blueprint("register",__name__)
+admin_blueprint=Blueprint("admin",__name__)
 user_repository=UserRepository()
 category_repository=CategoryRepository()
+admin_repository=AdminRepository()
 
 def model_to_json(model):
     if type(model) is list:
@@ -70,6 +72,28 @@ class Register:
             return jsonify({"Message":"Succesful"})
         else:
             return jsonify({"Message":"User not Found"}),400
+
+class AdminLogin:
+
+    @admin_blueprint.route("/admin-login",methods=["POST"])
+    def admin_login():
+        data=request.get_json()
+        username=data["username"]
+        password=data["password"]
+        if "username" in data:
+            username=data["username"]
+            if admin_repository.exists_by_username(username):
+                admin=admin_repository.get_by_username(username)
+            else:
+                return jsonify({"Error Message":"Email or Username or Password is incorrect"}),400
+        else:
+            return jsonify({"Error Message":"Neither username nor email was given"}),400
+        if admin.password==hash_password(password):
+            if admin.is_active:
+                return jsonify({"Token":create_token(admin.username)})
+            else:
+                return jsonify({"Error Message":"Inactivated Account"}),400
+        return jsonify({"Error Message":"Email or Username or Password is incorrect"}),400
 
 class CategoryAPI:
     
