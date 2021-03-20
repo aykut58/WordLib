@@ -36,6 +36,7 @@ class UserRepository:
     
     def delete_by_id(self,id):
         db.session.query(User).filter_by(id=id).delete()
+        db.session.commit()
 
 class CategoryRepository:
 
@@ -57,6 +58,7 @@ class CategoryRepository:
     
     def delete_by_id(self,id):
         db.session.query(Category).filter_by(id=id).delete()
+        db.session.commit()
 
 class AdminRepository:
 
