@@ -9,6 +9,13 @@ token_key="key"
 token_algorithm="HS256"
 user_repository=UserRepository()
 
+def is_token_valid(token):
+    try:
+        jwt.decode(request.headers.get("token"),token_key,token_algorithm)
+        return True
+    except:
+        return False
+
 def hash_password(password):
     return hashlib.sha512(password.encode()).hexdigest()
 
@@ -17,7 +24,7 @@ def create_token(username):
     return jwt.encode({"username":username,"exp":expire},token_key,token_algorithm)
 
 def token_filter():
-    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate"):
+    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check":
         if "token" in request.headers:
             try:
                 token=jwt.decode(request.headers.get("token"),token_key,token_algorithm)

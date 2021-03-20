@@ -1,7 +1,7 @@
 from flask import Blueprint,request,jsonify
 from repository import UserRepository,CategoryRepository,AdminRepository
 from model import User,Category
-from security import create_token,hash_password
+from security import create_token,hash_password,is_token_valid
 from send_email import send_activation_mail
 
 user_blueprint=Blueprint("user",__name__)
@@ -19,6 +19,14 @@ def model_to_json(model):
         return model.to_json()
 
 class Register:
+
+    @register_blueprint.route("/token-check",methods=["POST"])
+    def token_check():
+        if "token" in request.headers:
+            return jsonify({"Result":is_token_valid(request.headers.get("token"))})
+        else:
+            return jsonify({"Error":"Token was not given"}),400
+
     @register_blueprint.route("/login",methods=["POST"])
     def login():
         data=request.get_json()
