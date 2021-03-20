@@ -5,7 +5,7 @@ from flask import request,jsonify
 from repository import UserRepository
 from jwt.exceptions import DecodeError,ExpiredSignatureError
 
-token_key="key"
+token_key="7Kc8QdRBrFuRVnBS"
 token_algorithm="HS256"
 user_repository=UserRepository()
 
