@@ -62,6 +62,9 @@ class CategoryRepository:
 
 class AdminRepository:
 
+    def count(self):
+        return db.session.query(Admin).count()
+
     def exists_by_username(self,username):
         return db.session.query(Admin).filter_by(username=username).scalar() is not None
 
