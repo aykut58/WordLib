@@ -47,7 +47,7 @@ class Register:
             return jsonify({"Error Message":"Neither username nor email was given"}),400
         if user.password==hash_password(password):
             if user.is_active:
-                return jsonify({"Token":create_token(user.username)})
+                return jsonify({"Token":create_token(user)})
             else:
                 return jsonify({"Error Message":"Inactivated Account"}),400
         return jsonify({"Error Message":"Email or Username or Password is incorrect"}),400
@@ -93,15 +93,12 @@ class AdminLogin:
             if admin_repository.exists_by_username(username):
                 admin=admin_repository.get_by_username(username)
             else:
-                return jsonify({"Error Message":"Email or Username or Password is incorrect"}),400
+                return jsonify({"Error Message":"Username or Password is incorrect"}),400
         else:
-            return jsonify({"Error Message":"Neither username nor email was given"}),400
+            return jsonify({"Error Message":"username not found"}),400
         if admin.password==hash_password(password):
-            if admin.is_active:
-                return jsonify({"Token":create_token(admin.username)})
-            else:
-                return jsonify({"Error Message":"Inactivated Account"}),400
-        return jsonify({"Error Message":"Email or Username or Password is incorrect"}),400
+            return jsonify({"Token":create_token(admin)})
+        return jsonify({"Error Message":"Username or Password is incorrect"}),400
 
 class CategoryAPI:
     
