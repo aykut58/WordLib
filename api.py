@@ -63,9 +63,9 @@ class Register:
             if not user_repository.exists_by_username(username):
                 if not user_repository.exists_by_email(email):
                     password=hash_password(password)
-                    user=User(username=username,password=password,email=email,is_active=False)
+                    user=User(username=username,password=password,email=email,is_active=True)
                     user=user_repository.add(user)
-                    send_activation_mail(email,user)
+                    #send_activation_mail(email,user)
                     return jsonify({"Message":"Successful"})
                 return jsonify({"Error Message":"Another User uses this email"}),400
             return jsonify({"Error Message":"Another User uses this username"}),400
