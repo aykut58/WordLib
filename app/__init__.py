@@ -10,7 +10,7 @@ app.config.from_object("app.config.Config")
 if app.config["ENV"]=="development":
     app.debug=True
 db.init_app(app)
-blueprints=(token_check_blueprint,category_blueprint,user_blueprint,admin_login_blueprint,activate_blueprint,login_blueprint,register_blueprint)
+blueprints=(error_blueprint,token_check_blueprint,category_blueprint,user_blueprint,admin_login_blueprint,activate_blueprint,login_blueprint,register_blueprint)
 for blueprint in blueprints:
     app.register_blueprint(blueprint)
 app.before_request(token_filter)
