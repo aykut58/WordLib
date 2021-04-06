@@ -4,7 +4,7 @@ import datetime
 from flask import request
 from app.repository import UserRepository,AdminRepository
 from jwt.exceptions import DecodeError,ExpiredSignatureError
-from app.exception import AuthenticationException
+from werkzeug.exceptions import BadRequest,Unauthorized,Forbidden
 
 token_key="7Kc8QdRBrFuRVnBS"
 token_algorithm="HS256"
@@ -28,11 +28,11 @@ def create_token(user):
 def user_exists(username,role):
     if role=="Admin":
         if not admin_repository.exists_by_username(username):
-            raise AuthenticationException("Admin not Found",code=404)
+            raise Unauthorized("Admin not Found")
         return admin_repository.get_by_username(username)
     elif role=="User":
         if not user_repository.exists_by_username(username):
-            raise AuthenticationException("User not Found",code=404)
+            raise Unauthorized("User not Found")
         return user_repository.get_by_username(username)
 
 def authentication(role):
@@ -40,13 +40,13 @@ def authentication(role):
         try:
             token=jwt.decode(request.headers.get("token"),token_key,token_algorithm)
         except DecodeError:
-            raise AuthenticationException("Invalid Token",code=401)
+            raise Unauthorized("Invalid Token")
         except ExpiredSignatureError:
-            raise AuthenticationException("Expired Token",code=401)
+            raise Unauthorized("Expired Token")
         username=token.get("username")
         userrole=token.get("role")
         user_exists(username,userrole)
         if role!="*" and userrole!=role:
-            raise AuthenticationException("Authorization Error",code=403)
+            raise Forbidden("Authorization Error")
     else:
-        raise AuthenticationException("Token not Found",code=401)
+        raise BadRequest("Token not Found")

@@ -1,6 +1,7 @@
 from flask import jsonify
 from app.repository import UserRepository
 from app import app
+from werkzeug.exceptions import BadRequest
 
 user_repository=UserRepository()
 
@@ -12,4 +13,4 @@ def activate_user(id):
         user_repository.update(user)
         return jsonify({"Message":"Succesful"})
     else:
-        return jsonify({"Message":"User not Found"}),404
+        raise BadRequest("User not Found by this id")

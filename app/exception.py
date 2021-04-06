@@ -1,22 +1,13 @@
-from flask import jsonify
-
-class AuthenticationException(Exception):
-
-    def __init__(self,*args:object,code):
-        super().__init__(*args)
-        self.code=code
+from flask import jsonify,request
 
 def default_error_handler(exception):
-    print(type(exception),str(exception))
+    #TODO log
+    print(type(exception),str(exception),request.path,request.method)
     return jsonify({"Error":"Something Went Wrong"}),500
-
-def authentication_error_handler(exception):
-    return jsonify({"Error":str(exception)}),exception.code
 
 def http_error_handler(exception):
     return jsonify({"Error":str(exception)}),exception.code
 
-def data_error_handler(exception):
-    print("data exception")
+def database_error_handler(exception):
     print(type(exception),str(exception))
-    return jsonify({"Error":str(exception)}),400
+    return jsonify({"Error":str(exception)}),500
