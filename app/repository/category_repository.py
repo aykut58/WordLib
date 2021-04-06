@@ -1,4 +1,4 @@
-from app.db import db
+from app.database import db
 from app.model import Category
 
 class CategoryRepository:
