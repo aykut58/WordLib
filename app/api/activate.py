@@ -1,10 +1,10 @@
-from flask import Blueprint,jsonify
+from flask import jsonify
 from app.repository import UserRepository
+from app import app
 
 user_repository=UserRepository()
-activate_blueprint=Blueprint("activate",__name__)
 
-@activate_blueprint.route("/activate/<id>",methods=["GET"])
+@app.route("/activate/<id>",methods=["GET"])
 def activate_user(id):
     if user_repository.exists_by_id(id):
         user=user_repository.get_by_id(id)

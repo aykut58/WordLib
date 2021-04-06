@@ -1,9 +1,8 @@
-from flask import Blueprint,request,jsonify
+from flask import request,jsonify
 from app.security import is_token_valid
+from app import app
 
-token_check_blueprint=Blueprint("token_check",__name__)
-
-@token_check_blueprint.route("/token-check",methods=["POST"])
+@app.route("/tokencheck",methods=["POST"])
 def token_check():
     if "token" in request.headers:
         return jsonify({"Result":is_token_valid(request.headers.get("token"))})

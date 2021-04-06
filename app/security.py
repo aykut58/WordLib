@@ -25,7 +25,7 @@ def create_token(user):
     return jwt.encode({"username":user.username,"exp":expire,"usertype":type(user).__name__},token_key,token_algorithm)
 
 def token_filter():
-    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check" and request.path!="/login/admin":
+    if request.path!="/" and request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check" and request.path!="/login/admin":
         if "token" in request.headers:
             try:
                 token=jwt.decode(request.headers.get("token"),token_key,token_algorithm)

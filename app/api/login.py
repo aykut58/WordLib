@@ -1,11 +1,11 @@
-from flask import Blueprint,request,jsonify
+from flask import request,jsonify
 from app.repository import UserRepository
 from app.security import hash_password,create_token
+from app import app
 
-login_blueprint=Blueprint("login",__name__)
 user_repository=UserRepository()
 
-@login_blueprint.route("/login",methods=["POST"])
+@app.route("/login",methods=["POST"])
 def login():
     data=request.get_json()
     password=data["password"]

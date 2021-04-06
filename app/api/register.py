@@ -1,12 +1,12 @@
-from flask import Blueprint,request,jsonify
+from flask import request,jsonify
 from app.repository import UserRepository
 from app.security import create_token,hash_password
 from app.model import User
+from app import app
 
-register_blueprint=Blueprint("register",__name__)
 user_repository=UserRepository()
 
-@register_blueprint.route("/register",methods=["POST"])
+@app.route("/register",methods=["POST"])
 def register():
     data=request.get_json()
     username=data["username"]

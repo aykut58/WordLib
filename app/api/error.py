@@ -1,10 +1,15 @@
-from flask import Blueprint,jsonify
+from flask import jsonify
 from sqlalchemy.orm.exc import NoResultFound
+from app import app
 
-error_blueprint=Blueprint("error",__name__)
-
-@error_blueprint.app_errorhandler(Exception)
-def error(error):
+@app.errorhandler(Exception)
+def errorhandler(error):
     if isinstance(error,NoResultFound):
         return jsonify({"Message":"No Entity Found by This id"}),400
-    return jsonify({"Message":"Error"}),500
+    if error.code==404:
+        return jsonify({"Message":"URL Not Found"}),404
+    if error.code==500:
+        return jsonify({"Message":"Something went wrong on server"}),500
+    if error.code==405:
+        return jsonify({"Message":"Method not Allowed"}),405
+    return jsonify({"Message":"Error"}),error.code
