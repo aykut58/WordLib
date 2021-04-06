@@ -1,4 +1,4 @@
 .dockerignore
 .gitignore
 .git
-docker-compose.yml
+__pycache__/

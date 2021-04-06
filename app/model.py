@@ -1,4 +1,4 @@
-from db import db
+from app.db import db
 from sqlalchemy import Column,Integer,String,Boolean
 
 class User(db.Model):
@@ -8,7 +8,7 @@ class User(db.Model):
     password=Column(String(128))
     is_active=Column(Boolean)
 
-    def to_json(self):
+    def to_dict(self):
         return {"id":self.id,"email":self.email,"username":self.username,"is_active":self.is_active}
 
 class Admin(db.Model):
@@ -16,12 +16,12 @@ class Admin(db.Model):
     username=Column(String(30),unique=True)
     password=Column(String(128))
 
-    def to_json(self):
+    def to_dict(self):
         return {"id":self.id,"username":self.username}
 
 class Category(db.Model):
     id=Column(Integer,primary_key=True)
     name=Column(String(25),unique=True)
 
-    def to_json(self):
+    def to_dict(self):
         return {"id":self.id,"name":self.name}

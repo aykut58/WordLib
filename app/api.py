@@ -1,8 +1,8 @@
 from flask import Blueprint,request,jsonify
-from repository import UserRepository,CategoryRepository,AdminRepository
-from model import User,Category
-from security import create_token,hash_password,is_token_valid
-from send_email import send_activation_mail
+from app.repository import UserRepository,CategoryRepository,AdminRepository
+from app.model import User,Category
+from app.security import create_token,hash_password,is_token_valid
+from app.send_email import send_activation_mail
 
 user_blueprint=Blueprint("user",__name__)
 category_blueprint=Blueprint("category",__name__)
@@ -12,11 +12,11 @@ user_repository=UserRepository()
 category_repository=CategoryRepository()
 admin_repository=AdminRepository()
 
-def model_to_json(model):
+def model_to_dict(model):
     if type(model) is list:
-        return [each.to_json() for each in model]
+        return [each.to_dict() for each in model]
     else:
-        return model.to_json()
+        return model.to_dict()
 
 class Register:
 
@@ -83,7 +83,7 @@ class Register:
 
 class AdminLogin:
 
-    @admin_blueprint.route("/admin-login",methods=["POST"])
+    @admin_blueprint.route("/login/admin",methods=["POST"])
     def admin_login():
         data=request.get_json()
         username=data["username"]
@@ -104,23 +104,23 @@ class CategoryAPI:
     
     @category_blueprint.route("/category",methods=["GET"])
     def get_all():
-        return jsonify(model_to_json(category_repository.get_all()))
+        return jsonify(model_to_dict(category_repository.get_all()))
     
     @category_blueprint.route("/category/<id>",methods=["GET"])
     def get_by_id(id):
-        return jsonify(model_to_json(category_repository.get_by_id(id)))
+        return jsonify(model_to_dict(category_repository.get_by_id(id)))
     
     @category_blueprint.route("/category",methods=["POST"])
     def add():
         data=request.get_json()
         category=Category(name=data["name"])
-        return jsonify(model_to_json(category_repository.add(category)))
+        return jsonify(model_to_dict(category_repository.add(category)))
     
     @category_blueprint.route("/category",methods=["PUT"])
     def update():
         data=request.get_json()
         category=Category(name=data["name"],id=data["id"])
-        return jsonify(model_to_json(category_repository.update(category)))
+        return jsonify(model_to_dict(category_repository.update(category)))
     
     @category_blueprint.route("/category/<id>",methods=["DELETE"])
     def delete_by_id(id):
@@ -131,8 +131,8 @@ class UserAPI:
     
     @user_blueprint.route("/user",methods=["GET"])
     def get_all():
-        return jsonify(model_to_json(user_repository.get_all()))
+        return jsonify(model_to_dict(user_repository.get_all()))
     
     @user_blueprint.route("/user/<id>",methods=["GET"])
     def get_by_id(id):
-        return jsonify(model_to_json(user_repository.get_by_id(id)))
+        return jsonify(model_to_dict(user_repository.get_by_id(id)))

@@ -2,7 +2,7 @@ import hashlib
 import jwt
 import datetime
 from flask import request,jsonify
-from repository import UserRepository,AdminRepository
+from app.repository import UserRepository,AdminRepository
 from jwt.exceptions import DecodeError,ExpiredSignatureError
 
 token_key="7Kc8QdRBrFuRVnBS"
@@ -25,7 +25,7 @@ def create_token(user):
     return jwt.encode({"username":user.username,"exp":expire,"usertype":type(user).__name__},token_key,token_algorithm)
 
 def token_filter():
-    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check" and request.path!="/admin-login":
+    if request.path!="/login" and request.path!="/register" and not request.path.startswith("/activate") and request.path!="/token-check" and request.path!="/login/admin":
         if "token" in request.headers:
             try:
                 token=jwt.decode(request.headers.get("token"),token_key,token_algorithm)

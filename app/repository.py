@@ -1,5 +1,5 @@
-from db import db
-from model import User,Category,Admin
+from app.db import db
+from app.model import User,Category,Admin
 
 class UserRepository:
 
