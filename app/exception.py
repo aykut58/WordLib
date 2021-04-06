@@ -7,7 +7,3 @@ def default_error_handler(exception):
 
 def http_error_handler(exception):
     return jsonify({"Error":str(exception)}),exception.code
-
-def database_error_handler(exception):
-    print(type(exception),str(exception))
-    return jsonify({"Error":str(exception)}),500

@@ -3,9 +3,8 @@ from app.security import hash_password
 from app.repository import AdminRepository
 from app import database
 from app.model import *
-from app.exception import default_error_handler,http_error_handler,database_error_handler
+from app.exception import default_error_handler,http_error_handler
 from werkzeug.exceptions import HTTPException
-from sqlalchemy.exc import SQLAlchemyError
 
 def load_config(app):
     app.config.from_object("app.config.Config")
@@ -26,7 +25,7 @@ def create_admin(app):
             admin_repository.add(admin)
 
 def add_error_handlers(app):
-    error_handlers=((Exception,default_error_handler),(HTTPException,http_error_handler),(SQLAlchemyError,database_error_handler))
+    error_handlers=((Exception,default_error_handler),(HTTPException,http_error_handler))
     for exception,error_handler in error_handlers:
         app.register_error_handler(exception,error_handler)
 
