@@ -10,6 +10,7 @@ def load_config(app):
     app.config.from_object("app.config.Config")
     if app.config["ENV"]=="development":
         app.debug=True
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
 
 def create_database(app):
     database.db.init_app(app)
