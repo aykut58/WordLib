@@ -2,6 +2,7 @@ from flask import request,jsonify
 from app.repository import AdminRepository
 from app.security import hash_password,create_token
 from app import app
+from app.exception import AuthenticationException
 
 admin_repository=AdminRepository()
 
@@ -15,9 +16,9 @@ def admin_login():
         if admin_repository.exists_by_username(username):
             admin=admin_repository.get_by_username(username)
         else:
-            return jsonify({"Error Message":"Username or Password is incorrect"}),400
+            raise AuthenticationException("Username or Password is incorrect",code=401)
     else:
-        return jsonify({"Error Message":"username not found"}),400
+        raise AuthenticationException("Username not Found",code=400)
     if admin.password==hash_password(password):
         return jsonify({"Token":create_token(admin)})
-    return jsonify({"Error Message":"Username or Password is incorrect"}),400
+    raise AuthenticationException("Username or Password is incorrect",code=401)

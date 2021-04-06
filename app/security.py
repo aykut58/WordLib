@@ -1,7 +1,7 @@
 import hashlib
 import jwt
 import datetime
-from flask import request,jsonify
+from flask import request
 from app.repository import UserRepository,AdminRepository
 from jwt.exceptions import DecodeError,ExpiredSignatureError
 from app.exception import AuthenticationException
@@ -46,7 +46,7 @@ def authentication(role):
         username=token.get("username")
         userrole=token.get("role")
         user_exists(username,userrole)
-        if userrole!=role:
+        if role!="*" and userrole!=role:
             raise AuthenticationException("Authorization Error",code=403)
     else:
         raise AuthenticationException("Token not Found",code=401)
