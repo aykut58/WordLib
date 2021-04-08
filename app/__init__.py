@@ -2,7 +2,7 @@ from flask import Flask
 from app.security import hash_password
 from app.repository import AdminRepository
 from app import database
-from app.model import *
+from app.model import Admin,User,Category
 from app.exception import default_error_handler,http_error_handler
 from werkzeug.exceptions import HTTPException
 
