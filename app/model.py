@@ -1,5 +1,13 @@
+from sqlalchemy.orm import relation
 from app.database import db
-from sqlalchemy import Column,Integer,String,Boolean
+from sqlalchemy import Column,Integer,String,Boolean,ForeignKey
+
+class Word(db.Model):
+    id=Column(Integer,primary_key=True)
+    english=Column(String(100),unique=True)
+    turkish=Column(String(100),unique=True)
+    category=relation("Category")
+    category_id=Column(ForeignKey("category.id"))
 
 class Admin(db.Model):
     id=Column(Integer,primary_key=True)
