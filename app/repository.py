@@ -1,5 +1,5 @@
 from app.database import db
-from app.model import Admin,User,Category
+from app.model import Admin,User,Category,Word
 
 class UserRepository:
 
@@ -58,6 +58,37 @@ class CategoryRepository:
     
     def delete_by_id(self,id):
         db.session.query(Category).filter_by(id=id).delete()
+        db.session.commit()
+
+class WordRepository:
+
+    def get_all(self):
+        return db.session.query(Word).all()
+    
+    def get_by_id(self,id):
+        return db.session.query(Word).filter_by(id=id).one()
+    
+    def exists_by_id(self,id):
+        return db.session.query(Word).filter_by(id=id).scalar() is not None
+    
+    def get_by_turkish(self,turkish):
+        return db.session.query(Word).filter_by(turkish=turkish.lower()).one()
+    
+    def get_by_english(self,english):
+        return db.session.query(Word).filter_by(english=english.lower()).one()
+
+    def add(self,word):
+        word=db.session.merge(word)
+        db.session.commit()
+        return word
+    
+    def update(self,word):
+        word=db.session.merge(word)
+        db.session.commit()
+        return word
+    
+    def delete_by_id(self,id):
+        db.session.query(Word).filter_by(id=id).delete()
         db.session.commit()
 
 class AdminRepository:
