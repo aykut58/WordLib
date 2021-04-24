@@ -3,11 +3,24 @@ from werkzeug.exceptions import BadRequest,Unauthorized,Conflict
 from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
 from app.model import Category,User
+from .serializer import WordSerializer
+from .service import WordService
 
 blueprint=Blueprint("blueprint",__name__)
 user_repository=UserRepository()
 admin_repository=AdminRepository()
 category_repository=CategoryRepository()
+word_serializer=WordSerializer()
+words_serializer=WordSerializer(many=True)
+word_service=WordService()
+
+@blueprint.route("/word")
+def get_all_words():
+    return words_serializer.jsonify(word_service.get_all())
+
+@blueprint.route("/word/<id>")
+def get_word_by_id(id):
+    return word_serializer.jsonify(word_service.get_by_id(id))
 
 def model_to_json(model):
     if type(model) is list:
