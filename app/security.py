@@ -9,6 +9,15 @@ from jwt.exceptions import DecodeError,ExpiredSignatureError
 user_repository=UserRepository()
 admin_repository=AdminRepository()
 
+def get_logged_in_user_role():
+    return get_token(request.headers["token"])["role"]
+
+def logged_in():
+    if "token" in request.headers:
+        return is_token_valid(request.headers["token"])
+    else:
+        return False
+
 def hash_password(password):
     return hashlib.sha512(password.encode()).hexdigest()
 
