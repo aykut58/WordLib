@@ -2,13 +2,15 @@ from flask import Flask
 from app.security import hash_password
 from app.repository import AdminRepository
 from app import database
-from app.model import Admin,User,Category
+from app.model import Admin,User,Category,Word
 from app.api import blueprint
 from app.exception import error_handler_blueprint
+from .serializer import marshmallow
 
 def init_app():
     create_database()
     create_admin()
+    marshmallow.init_app(app)
 
 def create_database():
     database.db.init_app(app)
