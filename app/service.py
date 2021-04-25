@@ -1,5 +1,5 @@
 from .repository import WordRepository
-from werkzeug.exceptions import NotFound,Unauthorized
+from werkzeug.exceptions import Forbidden, NotFound,Unauthorized
 from . import security
 
 class WordService:
@@ -25,7 +25,13 @@ class WordService:
         return self.word_repository.get_by_english(english)
 
     def add(self,word):
-        return self.word_repository.add(word)
+        if security.logged_in():
+            if security.is_logged_in_user_admin():
+                return self.word_repository.add(word)
+            else:
+                raise Forbidden("You have no permission for this operation")
+        else:
+            raise Unauthorized("You must log in")
     
     def update(self,word):
         return self.word_repository.update(word)
