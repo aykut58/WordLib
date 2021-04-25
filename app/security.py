@@ -9,8 +9,8 @@ from flask import current_app,request
 user_repository=UserRepository()
 admin_repository=AdminRepository()
 
-def get_logged_in_user_role():
-    return get_token(request.headers["token"])["role"]
+def is_logged_in_user_admin():
+    return get_token(request.headers["token"])["role"]=="Admin"
 
 def logged_in():
     if "token" in request.headers:
