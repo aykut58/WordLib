@@ -2,7 +2,7 @@ from flask import jsonify,request,Blueprint
 from werkzeug.exceptions import BadRequest,Unauthorized,Conflict
 from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
-from app.model import Category,User
+from app.model import Category,User,Word
 from .serializer import WordSerializer
 from .service import WordService
 
@@ -21,6 +21,14 @@ def get_all_words():
 @blueprint.route("/word/<id>")
 def get_word_by_id(id):
     return word_serializer.jsonify(word_service.get_by_id(id))
+
+@blueprint.route("/word",methods=["POST"])
+def add_word():
+    category_id=request.get_json()["category_id"]
+    turkish=request.get_json()["turkish"]
+    english=request.get_json()["english"]
+    word=Word(category_id=category_id,turkish=turkish,english=english)
+    return word_serializer.jsonify(word_service.add(word))
 
 def model_to_json(model):
     if type(model) is list:
@@ -67,7 +75,7 @@ def register():
             user=User(username=username,password=password,email=email,is_active=True)
             user=user_repository.add(user)
             #send_activation_mail(email,user)
-            return jsonify({"Message":"Successful"})
+            return jsonify({"Message":"Successful"}),201
         raise Conflict("Another User uses this email")
     raise Conflict("Another User uses this username")
 
@@ -120,7 +128,7 @@ def add_category():
     authentication("Admin")
     data=request.get_json()
     category=Category(name=data["name"])
-    return model_to_json(category_repository.add(category))
+    return model_to_json(category_repository.add(category)),201
 
 @blueprint.route("/category",methods=["PUT"])
 def update_category():
