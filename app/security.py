@@ -1,10 +1,10 @@
 import hashlib
-from flask import request
 from app.repository import UserRepository,AdminRepository
 from werkzeug.exceptions import BadRequest,Unauthorized,Forbidden
 import jwt
 import datetime
 from jwt.exceptions import DecodeError,ExpiredSignatureError
+from flask import current_app,request
 
 user_repository=UserRepository()
 admin_repository=AdminRepository()
@@ -40,23 +40,22 @@ def authentication(role):
     else:
         raise BadRequest("Token not Found")
 
-token_key="7Kc8QdRBrFuRVnBS"
 token_algorithm="HS256"
 
 def is_token_valid(token_string):
     try:
-        jwt.decode(token_string,token_key,token_algorithm)
+        jwt.decode(token_string,current_app.config["JWT_KEY"],token_algorithm)
         return True
     except:
         return False
 
 def create_token(user):
     expire=round((datetime.datetime.now()+datetime.timedelta(days=30)).timestamp())
-    return jwt.encode({"username":user.username,"exp":expire,"role":user.role},token_key,token_algorithm)
+    return jwt.encode({"username":user.username,"exp":expire,"role":user.role},current_app.config["JWT_KEY"],token_algorithm)
 
 def get_token(token_string):
     try:
-        token=jwt.decode(token_string,token_key,token_algorithm)
+        token=jwt.decode(token_string,current_app.config["JWT_KEY"],token_algorithm)
     except DecodeError:
         raise Unauthorized("Invalid Token")
     except ExpiredSignatureError:
