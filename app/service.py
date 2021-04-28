@@ -1,5 +1,5 @@
 from .repository import WordRepository
-from werkzeug.exceptions import Forbidden, NotFound,Unauthorized
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound,Unauthorized
 from . import security
 
 class WordService:
@@ -19,7 +19,13 @@ class WordService:
         raise NotFound("No word found by this id")
     
     def get_by_turkish(self,turkish):
-        return self.word_repository.get_by_turkish(turkish)
+        if security.logged_in():
+            if self.word_repository.exists_by_turkish(turkish):
+                return self.word_repository.get_by_turkish(turkish)
+            else:
+                raise BadRequest("No word found")
+        else:
+            raise Unauthorized("You must log in")
     
     def get_by_english(self,english):
         return self.word_repository.get_by_english(english)
