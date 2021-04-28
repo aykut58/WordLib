@@ -28,7 +28,16 @@ def add_word():
     turkish=request.get_json()["turkish"]
     english=request.get_json()["english"]
     word=Word(category_id=category_id,turkish=turkish,english=english)
-    return word_serializer.jsonify(word_service.add(word))
+    return word_serializer.jsonify(word_service.add(word)),201
+
+@blueprint.route("/word",methods=["PUT"])
+def update_word():
+    category_id=request.get_json()["category_id"]
+    id=request.get_json()["id"]
+    turkish=request.get_json()["turkish"]
+    english=request.get_json()["english"]
+    word=Word(category_id=category_id,turkish=turkish,english=english,id=id)
+    return word_serializer.jsonify(word_service.update(word))
 
 def model_to_json(model):
     if type(model) is list:
