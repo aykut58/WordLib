@@ -71,6 +71,12 @@ class WordRepository:
     def exists_by_id(self,id):
         return db.session.query(Word).filter_by(id=id).scalar() is not None
     
+    def exists_by_turkish(self,turkish):
+        return db.session.query(Word).filter_by(turkish=turkish).scalar() is not None
+    
+    def exists_by_english(self,english):
+        return db.session.query(Word).filter_by(english=english).scalar() is not None
+    
     def get_by_turkish(self,turkish):
         return db.session.query(Word).filter_by(turkish=turkish.lower()).one()
     
