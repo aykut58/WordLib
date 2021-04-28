@@ -18,6 +18,10 @@ word_service=WordService()
 def get_all_words():
     return words_serializer.jsonify(word_service.get_all())
 
+@blueprint.route("/word/turkish/<turkish>")
+def get_word_by_turkish(turkish):
+    return word_serializer.jsonify(word_service.get_by_turkish(turkish))
+
 @blueprint.route("/word/<id>")
 def get_word_by_id(id):
     return word_serializer.jsonify(word_service.get_by_id(id))
