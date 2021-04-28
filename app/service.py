@@ -34,7 +34,13 @@ class WordService:
             raise Unauthorized("You must log in")
     
     def update(self,word):
-        return self.word_repository.update(word)
+        if security.logged_in():
+            if security.is_logged_in_user_admin():
+                return self.word_repository.update(word)
+            else:
+                raise Forbidden("You have no permission for this operation")
+        else:
+            raise Unauthorized("You must log in")
     
     def delete_by_id(self,id):
         if self.word_repository.exists_by_id(id):
