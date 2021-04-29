@@ -30,6 +30,10 @@ def get_word_by_english(english):
 def get_word_by_id(id):
     return word_serializer.jsonify(word_service.get_by_id(id))
 
+@blueprint.route("/word/<id>",methods=["DELETE"])
+def delete_word_by_id(id):
+    return jsonify({"Result":word_service.delete_by_id(id)})
+
 @blueprint.route("/word",methods=["POST"])
 def add_word():
     category_id=request.get_json()["category_id"]
