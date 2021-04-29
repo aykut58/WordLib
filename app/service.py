@@ -14,9 +14,12 @@ class WordService:
             raise Unauthorized("You must log in")
     
     def get_by_id(self,id):
-        if self.word_repository.exists_by_id(id):
-            return self.word_repository.get_by_id(id)
-        raise NotFound("No word found by this id")
+        if security.logged_in():
+            if self.word_repository.exists_by_id(id):
+                return self.word_repository.get_by_id(id)
+            raise NotFound("No word found by this id")
+        else:
+            raise Unauthorized("You must log in")
     
     def get_by_turkish(self,turkish):
         if security.logged_in():
