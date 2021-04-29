@@ -58,7 +58,13 @@ class WordService:
             raise Unauthorized("You must log in")
     
     def delete_by_id(self,id):
-        if self.word_repository.exists_by_id(id):
-            self.word_repository.delete_by_id(id)
-            return True
-        raise NotFound("No word found by this id")
+        if security.logged_in():
+            if security.is_logged_in_user_admin():
+                if self.word_repository.exists_by_id(id):
+                    self.word_repository.delete_by_id(id)
+                    return True
+                raise NotFound("No word found by this id")
+            else:
+                raise Forbidden("You have no permission for this operation")
+        else:
+            raise Unauthorized("You must log in")
