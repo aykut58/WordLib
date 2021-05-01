@@ -14,6 +14,14 @@ word_serializer=WordSerializer()
 words_serializer=WordSerializer(many=True)
 word_service=WordService()
 
+def check_request_data(*keys):
+    if request.get_json()==None:
+        raise BadRequest(keys[0]+" not given")
+    for key in keys:
+        if not key in request.get_json():
+            raise BadRequest(key+" not given")
+    return True
+
 @blueprint.route("/word")
 def get_all_words():
     return words_serializer.jsonify(word_service.get_all())
@@ -36,20 +44,22 @@ def delete_word_by_id(id):
 
 @blueprint.route("/word",methods=["POST"])
 def add_word():
-    category_id=request.get_json()["category_id"]
-    turkish=request.get_json()["turkish"]
-    english=request.get_json()["english"]
-    word=Word(category_id=category_id,turkish=turkish,english=english)
-    return word_serializer.jsonify(word_service.add(word)),201
+    if check_request_data("turkish","english","category_id"):
+        category_id=request.get_json()["category_id"]
+        turkish=request.get_json()["turkish"]
+        english=request.get_json()["english"]
+        word=Word(category_id=category_id,turkish=turkish,english=english)
+        return word_serializer.jsonify(word_service.add(word)),201
 
 @blueprint.route("/word",methods=["PUT"])
 def update_word():
-    category_id=request.get_json()["category_id"]
-    id=request.get_json()["id"]
-    turkish=request.get_json()["turkish"]
-    english=request.get_json()["english"]
-    word=Word(category_id=category_id,turkish=turkish,english=english,id=id)
-    return word_serializer.jsonify(word_service.update(word))
+    if check_request_data("turkish","english","category_id","id"):
+        category_id=request.get_json()["category_id"]
+        id=request.get_json()["id"]
+        turkish=request.get_json()["turkish"]
+        english=request.get_json()["english"]
+        word=Word(category_id=category_id,turkish=turkish,english=english,id=id)
+        return word_serializer.jsonify(word_service.update(word))
 
 def model_to_json(model):
     if type(model) is list:
@@ -69,36 +79,33 @@ def activate_user(id):
 
 @blueprint.route("/login/admin",methods=["POST"])
 def admin_login():
-    data=request.get_json()
-    if "password" not in data:
-        raise BadRequest("Password was not Given")
-    if "username" not in data:
-        raise BadRequest("Username was not Given")
-    username=data["username"]
-    password=data["password"]
-    if admin_repository.exists_by_username(username):
-        admin=admin_repository.get_by_username(username)
-    else:
+    if check_request_data("username","password"):
+        username=request.get_json()["username"]
+        password=request.get_json()["password"]
+        if admin_repository.exists_by_username(username):
+            admin=admin_repository.get_by_username(username)
+        else:
+            raise Unauthorized("Username or Password is incorrect")
+        if admin.password==hash_password(password):
+            return jsonify({"Token":create_token(admin)})
         raise Unauthorized("Username or Password is incorrect")
-    if admin.password==hash_password(password):
-        return jsonify({"Token":create_token(admin)})
-    raise Unauthorized("Username or Password is incorrect")
 
 @blueprint.route("/register",methods=["POST"])
 def register():
-    data=request.get_json()
-    username=data["username"]
-    password=data["password"]
-    email=data["email"]
-    if not user_repository.exists_by_username(username):
-        if not user_repository.exists_by_email(email):
-            password=hash_password(password)
-            user=User(username=username,password=password,email=email,is_active=True)
-            user=user_repository.add(user)
-            #send_activation_mail(email,user)
-            return jsonify({"Message":"Successful"}),201
-        raise Conflict("Another User uses this email")
-    raise Conflict("Another User uses this username")
+    if check_request_data("username","password","email"):
+        data=request.get_json()
+        username=data["username"]
+        password=data["password"]
+        email=data["email"]
+        if not user_repository.exists_by_username(username):
+            if not user_repository.exists_by_email(email):
+                password=hash_password(password)
+                user=User(username=username,password=password,email=email,is_active=True)
+                user=user_repository.add(user)
+                #send_activation_mail(email,user)
+                return jsonify({"Message":"Successful"}),201
+            raise Conflict("Another User uses this email")
+        raise Conflict("Another User uses this username")
 
 @blueprint.route("/login",methods=["POST"])
 def login():
@@ -147,16 +154,16 @@ def get_category_by_id(id):
 @blueprint.route("/category",methods=["POST"])
 def add_category():
     authentication("Admin")
-    data=request.get_json()
-    category=Category(name=data["name"])
-    return model_to_json(category_repository.add(category)),201
+    if check_request_data("name"):
+        category=Category(name=request.get_json()["name"])
+        return model_to_json(category_repository.add(category)),201
 
 @blueprint.route("/category",methods=["PUT"])
 def update_category():
     authentication("Admin")
-    data=request.get_json()
-    category=Category(name=data["name"],id=data["id"])
-    return model_to_json(category_repository.update(category))
+    if check_request_data("id","name"):
+        category=Category(name=request.get_json()["name"],id=request.get_json()["id"])
+        return model_to_json(category_repository.update(category))
 
 @blueprint.route("/category/<id>",methods=["DELETE"])
 def delete_category_by_id(id):
