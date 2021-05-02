@@ -1,5 +1,6 @@
 from app.database import db
 from app.model import Admin,User,Category,Word
+from sqlalchemy.sql.expression import func
 
 class UserRepository:
 
@@ -64,7 +65,13 @@ class WordRepository:
 
     def get_all(self):
         return db.session.query(Word).all()
-    
+
+    def get_random_by_category_id(self,category_id,count):
+        return db.session.query(Word).filter_by(category_id=category_id).order_by(func.random()).limit(count).all()
+
+    def get_random(self,count):
+        return db.session.query(Word).order_by(func.random()).limit(count).all()
+   
     def get_by_id(self,id):
         return db.session.query(Word).filter_by(id=id).one()
     
