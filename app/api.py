@@ -26,6 +26,14 @@ def check_request_data(*keys):
 def get_all_words():
     return words_serializer.jsonify(word_service.get_all())
 
+@blueprint.route("/word/random/<count>")
+def get_random_words(count):
+    return words_serializer.jsonify(word_service.get_random(count))
+
+@blueprint.route("/word/random/<category_id>/<count>")
+def get_random_words_by_category_id(category_id,count):
+    return words_serializer.jsonify(word_service.get_random_by_category_id(category_id,count))
+
 @blueprint.route("/word/turkish/<turkish>")
 def get_word_by_turkish(turkish):
     return word_serializer.jsonify(word_service.get_by_turkish(turkish))
