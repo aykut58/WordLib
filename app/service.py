@@ -12,6 +12,18 @@ class WordService:
             return self.word_repository.get_all()
         else:
             raise Unauthorized("You must log in")
+
+    def get_random_by_category_id(self,category_id,count):
+        if security.logged_in():
+            return self.word_repository.get_random_by_category_id(category_id,count)
+        else:
+            raise Unauthorized("You must log in")
+
+    def get_random(self,count):
+        if security.logged_in():
+            return self.word_repository.get_random(count)
+        else:
+            raise Unauthorized("You must log in")
     
     def get_by_id(self,id):
         if security.logged_in():
