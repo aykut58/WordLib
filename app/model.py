@@ -1,4 +1,4 @@
-from sqlalchemy.orm import relation
+from sqlalchemy.orm import relation,relationship
 from app.database import db
 from sqlalchemy import Column,Integer,String,Boolean,ForeignKey
 
@@ -12,6 +12,7 @@ class TurkishWord(db.Model):
     word=Column(String(100),unique=True)
     category=relation("Category")
     category_id=Column(ForeignKey("category.id"))
+    english_words=relationship("EnglishWord",secondary=english_turkish)
 
 class EnglishWord(db.Model):
     id=Column(Integer,primary_key=True)
