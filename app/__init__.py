@@ -2,7 +2,7 @@ from flask import Flask
 from app.security import hash_password
 from app.repository import AdminRepository
 from app import database
-from app.model import Admin,User,Category,Word
+from app.model import Admin,User,Category,TurkishWord,EnglishWord
 from app.api import blueprint
 from app.exception import error_handler_blueprint
 from .serializer import marshmallow

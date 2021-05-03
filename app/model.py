@@ -2,10 +2,20 @@ from sqlalchemy.orm import relation
 from app.database import db
 from sqlalchemy import Column,Integer,String,Boolean,ForeignKey
 
-class Word(db.Model):
+english_turkish=db.Table("english_turkish",
+    Column("english_word_id",Integer,ForeignKey("english_word.id"),primary_key=True),
+    Column("turkish_word_id",Integer,ForeignKey("turkish_word.id"),primary_key=True)
+)
+
+class TurkishWord(db.Model):
     id=Column(Integer,primary_key=True)
-    english=Column(String(100),unique=True)
-    turkish=Column(String(100),unique=True)
+    word=Column(String(100),unique=True)
+    category=relation("Category")
+    category_id=Column(ForeignKey("category.id"))
+
+class EnglishWord(db.Model):
+    id=Column(Integer,primary_key=True)
+    word=Column(String(100),unique=True)
     category=relation("Category")
     category_id=Column(ForeignKey("category.id"))
 

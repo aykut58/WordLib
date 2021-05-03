@@ -1,5 +1,5 @@
 from app.database import db
-from app.model import Admin,User,Category,Word
+from app.model import Admin,User,Category
 from sqlalchemy.sql.expression import func
 
 class UserRepository:
@@ -62,7 +62,8 @@ class CategoryRepository:
         db.session.commit()
 
 class WordRepository:
-
+    pass
+"""
     def get_all(self):
         return db.session.query(Word).all()
 
@@ -103,7 +104,7 @@ class WordRepository:
     def delete_by_id(self,id):
         db.session.query(Word).filter_by(id=id).delete()
         db.session.commit()
-
+"""
 class AdminRepository:
 
     def count(self):

@@ -2,7 +2,7 @@ from flask import jsonify,request,Blueprint
 from werkzeug.exceptions import BadRequest,Unauthorized,Conflict
 from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
-from app.model import Category,User,Word
+from app.model import Category,User
 from .serializer import WordSerializer
 from .service import WordService
 
