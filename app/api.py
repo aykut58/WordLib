@@ -2,17 +2,20 @@ from flask import jsonify,request,Blueprint
 from werkzeug.exceptions import BadRequest,Unauthorized,Conflict
 from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
-from app.model import Category,User
-from .serializer import WordSerializer
-from .service import WordService
+from app.model import Category, EnglishWord,TurkishWord,User
+from .serializer import TurkishWordSerializer,EnglishWordSerializer
+from .service import EnglishWordService,TurkishWordService
 
 blueprint=Blueprint("blueprint",__name__)
 user_repository=UserRepository()
 admin_repository=AdminRepository()
 category_repository=CategoryRepository()
-word_serializer=WordSerializer()
-words_serializer=WordSerializer(many=True)
-word_service=WordService()
+turkish_word_serializer=TurkishWordSerializer()
+turkish_words_serializer=TurkishWordSerializer(many=True)
+turkish_word_service=TurkishWordService()
+english_word_serializer=EnglishWordSerializer()
+english_words_serializer=EnglishWordSerializer(many=True)
+english_word_service=EnglishWordService()
 
 def check_request_data(*keys):
     if request.get_json()==None:
@@ -22,52 +25,81 @@ def check_request_data(*keys):
             raise BadRequest(key+" not given")
     return True
 
-@blueprint.route("/word")
-def get_all_words():
-    return words_serializer.jsonify(word_service.get_all())
+@blueprint.route("/word/english")
+def get_all_english_words():
+    return english_words_serializer.jsonify(english_word_service.get_all())
 
-@blueprint.route("/word/random/<count>")
-def get_random_words(count):
-    return words_serializer.jsonify(word_service.get_random(count))
+@blueprint.route("/word/english/random/<count>")
+def get_random_english_words(count):
+    return english_words_serializer.jsonify(english_word_service.get_random(count))
 
-@blueprint.route("/word/random/<category_id>/<count>")
-def get_random_words_by_category_id(category_id,count):
-    return words_serializer.jsonify(word_service.get_random_by_category_id(category_id,count))
+@blueprint.route("/word/english/random/<category_id>/<count>")
+def get_random_english_words_by_category_id(category_id,count):
+    return english_words_serializer.jsonify(english_word_service.get_random_by_category_id(category_id,count))
 
-@blueprint.route("/word/turkish/<turkish>")
-def get_word_by_turkish(turkish):
-    return word_serializer.jsonify(word_service.get_by_turkish(turkish))
+@blueprint.route("/word/english/<id>")
+def get_english_word_by_id(id):
+    return english_word_serializer.jsonify(english_word_service.get_by_id(id))
 
-@blueprint.route("/word/english/<english>")
-def get_word_by_english(english):
-    return word_serializer.jsonify(word_service.get_by_english(english))
+@blueprint.route("/word/english/<id>",methods=["DELETE"])
+def delete_english_word_by_id(id):
+    return jsonify({"Result":english_word_service.delete_by_id(id)})
 
-@blueprint.route("/word/<id>")
-def get_word_by_id(id):
-    return word_serializer.jsonify(word_service.get_by_id(id))
-
-@blueprint.route("/word/<id>",methods=["DELETE"])
-def delete_word_by_id(id):
-    return jsonify({"Result":word_service.delete_by_id(id)})
-
-@blueprint.route("/word",methods=["POST"])
-def add_word():
-    if check_request_data("turkish","english","category_id"):
+@blueprint.route("/word/english",methods=["POST"])
+def add_english_word():
+    if check_request_data("category_id","word"):
         category_id=request.get_json()["category_id"]
-        turkish=request.get_json()["turkish"]
-        english=request.get_json()["english"]
-        word=Word(category_id=category_id,turkish=turkish,english=english)
-        return word_serializer.jsonify(word_service.add(word)),201
+        word=request.get_json()["word"]
+        english_word=EnglishWord(category_id=category_id,word=word)
+        return english_word_serializer.jsonify(english_word_service.add(english_word)),201
 
-@blueprint.route("/word",methods=["PUT"])
-def update_word():
-    if check_request_data("turkish","english","category_id","id"):
-        category_id=request.get_json()["category_id"]
+@blueprint.route("/word/english",methods=["PUT"])
+def update_english_word():
+    if check_request_data("turkish_words","category_id","id","word"):
         id=request.get_json()["id"]
-        turkish=request.get_json()["turkish"]
-        english=request.get_json()["english"]
-        word=Word(category_id=category_id,turkish=turkish,english=english,id=id)
-        return word_serializer.jsonify(word_service.update(word))
+        category_id=request.get_json()["category_id"]
+        word=request.get_json()["word"]
+        turkish_words=[turkish_word_service.get_by_id(turkish_word["id"]) for turkish_word in request.get_json()["turkish_words"]]
+        english_word=EnglishWord(category_id=category_id,word=word,turkish_words=turkish_words,id=id)
+        return english_word_serializer.jsonify(english_word_service.update(english_word))
+
+@blueprint.route("/word/turkish")
+def get_all_turkish_words():
+    return turkish_words_serializer.jsonify(turkish_word_service.get_all())
+
+@blueprint.route("/word/turkish/random/<count>")
+def get_random_turkish_words(count):
+    return turkish_words_serializer.jsonify(turkish_word_service.get_random(count))
+
+@blueprint.route("/word/turkish/random/<category_id>/<count>")
+def get_random_turkish_words_by_category_id(category_id,count):
+    return turkish_words_serializer.jsonify(turkish_word_service.get_random_by_category_id(category_id,count))
+
+@blueprint.route("/word/turkish/<id>")
+def get_turkish_word_by_id(id):
+    return turkish_word_serializer.jsonify(turkish_word_service.get_by_id(id))
+
+@blueprint.route("/word/turkish/<id>",methods=["DELETE"])
+def delete_turkish_word_by_id(id):
+    return jsonify({"Result":turkish_word_service.delete_by_id(id)})
+
+@blueprint.route("/word/turkish",methods=["POST"])
+def add_turkish_word():
+    if check_request_data("category_id","word"):
+        category_id=request.get_json()["category_id"]
+        word=request.get_json()["word"]
+        turkish_word=TurkishWord(category_id=category_id,word=word)
+        return turkish_word_serializer.jsonify(turkish_word_service.add(turkish_word)),201
+
+@blueprint.route("/word/turkish",methods=["PUT"])
+def update_turkish_word():
+    if check_request_data("english_words","category_id","id","word"):
+        category_id=request.get_json()["category_id"]
+        word=request.get_json()["word"]
+        id=request.get_json()["id"]
+        english_words=[english_word_service.get_by_id(english_word["id"]) for english_word in request.get_json()["english_words"]]
+        turkish_word=TurkishWord(category_id=category_id,word=word,english_words=english_words,id=id)
+        return turkish_word_serializer.jsonify(turkish_word_service.update(turkish_word))
 
 def model_to_json(model):
     if type(model) is list:

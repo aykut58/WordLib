@@ -19,6 +19,7 @@ class EnglishWord(db.Model):
     word=Column(String(100),unique=True)
     category=relation("Category")
     category_id=Column(ForeignKey("category.id"))
+    turkish_words=relationship("TurkishWord",secondary=english_turkish)
 
 class Admin(db.Model):
     id=Column(Integer,primary_key=True)

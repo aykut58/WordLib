@@ -1,5 +1,5 @@
 from app.database import db
-from app.model import Admin,User,Category
+from app.model import Admin, EnglishWord,TurkishWord,User,Category
 from sqlalchemy.sql.expression import func
 
 class UserRepository:
@@ -61,36 +61,23 @@ class CategoryRepository:
         db.session.query(Category).filter_by(id=id).delete()
         db.session.commit()
 
-class WordRepository:
-    pass
-"""
+class TurkishWordRepository:
+
     def get_all(self):
-        return db.session.query(Word).all()
+        return db.session.query(TurkishWord).all()
 
     def get_random_by_category_id(self,category_id,count):
-        return db.session.query(Word).filter_by(category_id=category_id).order_by(func.random()).limit(count).all()
+        return db.session.query(TurkishWord).filter_by(category_id=category_id).order_by(func.random()).limit(count).all()
 
     def get_random(self,count):
-        return db.session.query(Word).order_by(func.random()).limit(count).all()
-   
+        return db.session.query(TurkishWord).order_by(func.random()).limit(count).all()
+
     def get_by_id(self,id):
-        return db.session.query(Word).filter_by(id=id).one()
+        return db.session.query(TurkishWord).filter_by(id=id).one()
     
     def exists_by_id(self,id):
-        return db.session.query(Word).filter_by(id=id).scalar() is not None
+        return db.session.query(TurkishWord).filter_by(id=id).scalar() is not None
     
-    def exists_by_turkish(self,turkish):
-        return db.session.query(Word).filter_by(turkish=turkish).scalar() is not None
-    
-    def exists_by_english(self,english):
-        return db.session.query(Word).filter_by(english=english).scalar() is not None
-    
-    def get_by_turkish(self,turkish):
-        return db.session.query(Word).filter_by(turkish=turkish.lower()).one()
-    
-    def get_by_english(self,english):
-        return db.session.query(Word).filter_by(english=english.lower()).one()
-
     def add(self,word):
         word=db.session.merge(word)
         db.session.commit()
@@ -102,9 +89,40 @@ class WordRepository:
         return word
     
     def delete_by_id(self,id):
-        db.session.query(Word).filter_by(id=id).delete()
+        db.session.query(TurkishWord).filter_by(id=id).delete()
         db.session.commit()
-"""
+
+class EnglishWordRepository:
+
+    def get_all(self):
+        return db.session.query(EnglishWord).all()
+
+    def get_random_by_category_id(self,category_id,count):
+        return db.session.query(EnglishWord).filter_by(category_id=category_id).order_by(func.random()).limit(count).all()
+
+    def get_random(self,count):
+        return db.session.query(EnglishWord).order_by(func.random()).limit(count).all()
+   
+    def get_by_id(self,id):
+        return db.session.query(EnglishWord).filter_by(id=id).one()
+    
+    def exists_by_id(self,id):
+        return db.session.query(EnglishWord).filter_by(id=id).scalar() is not None
+    
+    def add(self,word):
+        word=db.session.merge(word)
+        db.session.commit()
+        return word
+    
+    def update(self,word):
+        word=db.session.merge(word)
+        db.session.commit()
+        return word
+    
+    def delete_by_id(self,id):
+        db.session.query(EnglishWord).filter_by(id=id).delete()
+        db.session.commit()
+
 class AdminRepository:
 
     def count(self):
