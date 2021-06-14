@@ -32,10 +32,11 @@ class Admin(db.Model):
 
 class Category(db.Model):
     id=Column(Integer,primary_key=True)
-    name=Column(String(25),unique=True)
+    turkish_name=Column(String(25),unique=True)
+    english_name=Column(String(25),unique=True)
 
     def to_dict(self):
-        return {"id":self.id,"name":self.name}
+        return {"id":self.id,"turkish_name":self.turkish_name,"english_name":self.english_name}
 
 class User(db.Model):
     id=Column(Integer,primary_key=True)

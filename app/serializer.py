@@ -6,7 +6,7 @@ marshmallow=Marshmallow()
 class CategorySerializer(marshmallow.Schema):
     class Meta:
         model=Category
-        fields=("id","name")
+        fields=("id","turkish_name","english_name")
 
 class NestedEnglishWordSerializer(marshmallow.Schema):
     class Meta:

@@ -194,15 +194,15 @@ def get_category_by_id(id):
 @blueprint.route("/category",methods=["POST"])
 def add_category():
     authentication("Admin")
-    if check_request_data("name"):
-        category=Category(name=request.get_json()["name"])
+    if check_request_data("turkish_name","english_name"):
+        category=Category(turkish_name=request.get_json()["turkish_name"],english_name=request.get_json()["english_name"])
         return model_to_json(category_repository.add(category)),201
 
 @blueprint.route("/category",methods=["PUT"])
 def update_category():
     authentication("Admin")
-    if check_request_data("id","name"):
-        category=Category(name=request.get_json()["name"],id=request.get_json()["id"])
+    if check_request_data("id","turkish_name","english_name"):
+        category=Category(turkish_name=request.get_json()["turkish_name"],english_name=request.get_json()["english_name"],id=request.get_json()["id"])
         return model_to_json(category_repository.update(category))
 
 @blueprint.route("/category/<id>",methods=["DELETE"])
