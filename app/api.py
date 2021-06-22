@@ -25,6 +25,10 @@ def check_request_data(*keys):
             raise BadRequest(key+" not given")
     return True
 
+@blueprint.route("/word/english/category/<category_id>")
+def get_english_word_by_category_id(category_id):
+    return english_words_serializer.jsonify(english_word_service.get_by_category_id(category_id))
+
 @blueprint.route("/word/english")
 def get_all_english_words():
     return english_words_serializer.jsonify(english_word_service.get_all())
@@ -62,6 +66,10 @@ def update_english_word():
         turkish_words=[turkish_word_service.get_by_id(turkish_word["id"]) for turkish_word in request.get_json()["turkish_words"]]
         english_word=EnglishWord(category_id=category_id,word=word,turkish_words=turkish_words,id=id)
         return english_word_serializer.jsonify(english_word_service.update(english_word))
+
+@blueprint.route("/word/turkish/category/<category_id>")
+def get_turkish_word_by_category_id(category_id):
+    return turkish_words_serializer.jsonify(turkish_word_service.get_by_category_id(category_id))
 
 @blueprint.route("/word/turkish")
 def get_all_turkish_words():

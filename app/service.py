@@ -3,6 +3,8 @@ from werkzeug.exceptions import Forbidden,NotFound,Unauthorized
 from . import security
 
 class TurkishWordService:
+    def get_by_category_id(self,category_id):
+        return self.turkish_word_repository.get_by_category_id(category_id)
 
     def __init__(self):
         self.turkish_word_repository=TurkishWordRepository()
@@ -64,6 +66,8 @@ class TurkishWordService:
             raise Unauthorized("You must log in")
 
 class EnglishWordService:
+    def get_by_category_id(self,category_id):
+        return self.english_word_repository.get_by_category_id(category_id)
 
     def __init__(self):
         self.english_word_repository=EnglishWordRepository()

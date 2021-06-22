@@ -62,6 +62,8 @@ class CategoryRepository:
         db.session.commit()
 
 class TurkishWordRepository:
+    def get_by_category_id(self,category_id):
+        return db.session.query(TurkishWord).filter_by(category_id=category_id).all()
 
     def get_all(self):
         return db.session.query(TurkishWord).all()
@@ -93,6 +95,8 @@ class TurkishWordRepository:
         db.session.commit()
 
 class EnglishWordRepository:
+    def get_by_category_id(self,category_id):
+        return db.session.query(EnglishWord).filter_by(category_id=category_id).all()
 
     def get_all(self):
         return db.session.query(EnglishWord).all()
