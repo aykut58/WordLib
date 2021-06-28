@@ -4,7 +4,7 @@ from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
 from app.model import Category, EnglishWord,TurkishWord,User
 from .serializer import TurkishWordSerializer,EnglishWordSerializer
-from .service import EnglishWordService,TurkishWordService
+from .service import EnglishWordService,TurkishWordService,EnglishExamService,TurkishExamService
 
 blueprint=Blueprint("blueprint",__name__)
 user_repository=UserRepository()
@@ -16,6 +16,8 @@ turkish_word_service=TurkishWordService()
 english_word_serializer=EnglishWordSerializer()
 english_words_serializer=EnglishWordSerializer(many=True)
 english_word_service=EnglishWordService()
+english_exam_service=EnglishExamService()
+turkish_exam_service=TurkishExamService()
 
 def check_request_data(*keys):
     if request.get_json()==None:
@@ -24,6 +26,14 @@ def check_request_data(*keys):
         if not key in request.get_json():
             raise BadRequest(key+" not given")
     return True
+
+@blueprint.route("/exam/english/category/<category_id>")
+def create_english_exam(category_id):
+    return jsonify(english_exam_service.create(category_id))
+
+@blueprint.route("/exam/turkish/category/<category_id>")
+def create_turkish_exam(category_id):
+    return jsonify(turkish_exam_service.create(category_id))
 
 @blueprint.route("/word/english/category/<category_id>")
 def get_english_word_by_category_id(category_id):
