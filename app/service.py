@@ -142,20 +142,42 @@ class EnglishExamService:
         self.english_word_service=EnglishWordService()
         self.turkish_word_service=TurkishWordService()
 
-    def create(self,category_id):
+    def create_by_category_id(self,category_id):
         if security.logged_in():
             output=[]
             words=self.english_word_service.get_random_by_category_id(category_id,20)
             for word in words:
                 exam_word={"word":word.word}
+                random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.turkish_words)-1)
-                options=[{"word":word.turkish_words[random_index].word,"is_correct":True}]
+                options=[]
                 random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3)
-                for incorrect_word in random_incorrect_options:
+                for i,incorrect_word in enumerate(random_incorrect_options):
+                    if i==random_correct_answer_index:
+                        options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
                 exam_word["options"]=options
                 output.append(exam_word)
-            print(output)
+            return output
+        else:
+            raise Unauthorized("You must log in")
+
+    def create(self):
+        if security.logged_in():
+            output=[]
+            words=self.english_word_service.get_random(20)
+            for word in words:
+                exam_word={"word":word.word}
+                random_correct_answer_index=random.randint(0,3)
+                random_index=random.randint(0,len(word.turkish_words)-1)
+                options=[]
+                random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3)
+                for i,incorrect_word in enumerate(random_incorrect_options):
+                    if i==random_correct_answer_index:
+                        options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
+                    options.append({"word":incorrect_word.word,"is_correct":False})
+                exam_word["options"]=options
+                output.append(exam_word)
             return output
         else:
             raise Unauthorized("You must log in")
@@ -166,20 +188,42 @@ class TurkishExamService:
         self.english_word_service=EnglishWordService()
         self.turkish_word_service=TurkishWordService()
 
-    def create(self,category_id):
+    def create_by_category_id(self,category_id):
         if security.logged_in():
             output=[]
             words=self.turkish_word_service.get_random_by_category_id(category_id,20)
             for word in words:
                 exam_word={"word":word.word}
+                random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.english_words)-1)
-                options=[{"word":word.english_words[random_index].word,"is_correct":True}]
+                options=[]
                 random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3)
-                for incorrect_word in random_incorrect_options:
+                for i,incorrect_word in enumerate(random_incorrect_options):
+                    if i==random_correct_answer_index:
+                        options.append({"word":word.english_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
                 exam_word["options"]=options
                 output.append(exam_word)
-            print(output)
+            return output
+        else:
+            raise Unauthorized("You must log in")
+
+    def create(self):
+        if security.logged_in():
+            output=[]
+            words=self.turkish_word_service.get_random(20)
+            for word in words:
+                exam_word={"word":word.word}
+                random_correct_answer_index=random.randint(0,3)
+                random_index=random.randint(0,len(word.english_words)-1)
+                options=[]
+                random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3)
+                for i,incorrect_word in enumerate(random_incorrect_options):
+                    if i==random_correct_answer_index:
+                        options.append({"word":word.english_words[random_index].word,"is_correct":True})
+                    options.append({"word":incorrect_word.word,"is_correct":False})
+                exam_word["options"]=options
+                output.append(exam_word)
             return output
         else:
             raise Unauthorized("You must log in")

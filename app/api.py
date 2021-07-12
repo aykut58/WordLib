@@ -28,12 +28,20 @@ def check_request_data(*keys):
     return True
 
 @blueprint.route("/exam/english/category/<category_id>")
-def create_english_exam(category_id):
-    return jsonify(english_exam_service.create(category_id))
+def create_english_exam_by_category_id(category_id):
+    return jsonify(english_exam_service.create_by_category_id(category_id))
 
 @blueprint.route("/exam/turkish/category/<category_id>")
-def create_turkish_exam(category_id):
-    return jsonify(turkish_exam_service.create(category_id))
+def create_turkish_exam_by_category_id(category_id):
+    return jsonify(turkish_exam_service.create_by_category_id(category_id))
+
+@blueprint.route("/exam/english")
+def create_english_exam():
+    return jsonify(english_exam_service.create())
+
+@blueprint.route("/exam/turkish")
+def create_turkish_exam():
+    return jsonify(turkish_exam_service.create())
 
 @blueprint.route("/word/english/category/<category_id>")
 def get_english_word_by_category_id(category_id):
