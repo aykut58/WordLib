@@ -150,12 +150,15 @@ class EnglishExamService:
                 exam_word={"word":word.word}
                 random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.turkish_words)-1)
+                print(word.word,random_correct_answer_index)
                 options=[]
                 random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3)
                 for i,incorrect_word in enumerate(random_incorrect_options):
                     if i==random_correct_answer_index:
                         options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
+                if random_correct_answer_index==3:
+                    options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
                 exam_word["options"]=options
                 output.append(exam_word)
             return output
@@ -176,6 +179,8 @@ class EnglishExamService:
                     if i==random_correct_answer_index:
                         options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
+                if random_correct_answer_index==3:
+                    options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
                 exam_word["options"]=options
                 output.append(exam_word)
             return output
@@ -202,6 +207,8 @@ class TurkishExamService:
                     if i==random_correct_answer_index:
                         options.append({"word":word.english_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
+                if random_correct_answer_index==3:
+                    options.append({"word":word.english_words[random_index].word,"is_correct":True})
                 exam_word["options"]=options
                 output.append(exam_word)
             return output
@@ -222,6 +229,8 @@ class TurkishExamService:
                     if i==random_correct_answer_index:
                         options.append({"word":word.english_words[random_index].word,"is_correct":True})
                     options.append({"word":incorrect_word.word,"is_correct":False})
+                if random_correct_answer_index==3:
+                    options.append({"word":word.english_words[random_index].word,"is_correct":True})
                 exam_word["options"]=options
                 output.append(exam_word)
             return output
