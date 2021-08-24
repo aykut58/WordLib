@@ -16,8 +16,8 @@ class TurkishWordService:
         else:
             raise Unauthorized("You must log in")
 
-    def get_random_except(self,word_id,count):
-        return self.turkish_word_repository.get_random_except(word_id,count)
+    def get_random_except(self,word_id,count,category_id):
+        return self.turkish_word_repository.get_random_except(word_id,count,category_id)
 
     def get_random_by_category_id(self,category_id,count):
         if security.logged_in():
@@ -71,8 +71,8 @@ class TurkishWordService:
 
 class EnglishWordService:
 
-    def get_random_except(self,word_id,count):
-        return self.english_word_repository.get_random_except(word_id,count)
+    def get_random_except(self,word_id,count,category_id):
+        return self.english_word_repository.get_random_except(word_id,count,category_id)
 
     def get_by_category_id(self,category_id):
         return self.english_word_repository.get_by_category_id(category_id)
@@ -152,7 +152,7 @@ class EnglishExamService:
                 random_index=random.randint(0,len(word.turkish_words)-1)
                 print(word.word,random_correct_answer_index)
                 options=[]
-                random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3)
+                random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3,word.category.id)
                 for i,incorrect_word in enumerate(random_incorrect_options):
                     if i==random_correct_answer_index:
                         options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
@@ -174,7 +174,7 @@ class EnglishExamService:
                 random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.turkish_words)-1)
                 options=[]
-                random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3)
+                random_incorrect_options=self.turkish_word_service.get_random_except(word.turkish_words[random_index].id,3,word.category.id)
                 for i,incorrect_word in enumerate(random_incorrect_options):
                     if i==random_correct_answer_index:
                         options.append({"word":word.turkish_words[random_index].word,"is_correct":True})
@@ -202,7 +202,7 @@ class TurkishExamService:
                 random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.english_words)-1)
                 options=[]
-                random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3)
+                random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3,word.category.id)
                 for i,incorrect_word in enumerate(random_incorrect_options):
                     if i==random_correct_answer_index:
                         options.append({"word":word.english_words[random_index].word,"is_correct":True})
@@ -224,7 +224,7 @@ class TurkishExamService:
                 random_correct_answer_index=random.randint(0,3)
                 random_index=random.randint(0,len(word.english_words)-1)
                 options=[]
-                random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3)
+                random_incorrect_options=self.english_word_service.get_random_except(word.english_words[random_index].id,3,word.category.id)
                 for i,incorrect_word in enumerate(random_incorrect_options):
                     if i==random_correct_answer_index:
                         options.append({"word":word.english_words[random_index].word,"is_correct":True})

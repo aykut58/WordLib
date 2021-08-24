@@ -62,8 +62,8 @@ class CategoryRepository:
         db.session.commit()
 
 class TurkishWordRepository:
-    def get_random_except(self,word_id,count):
-        return db.session.query(TurkishWord).filter(TurkishWord.id!=word_id).order_by(func.random()).limit(count).all()
+    def get_random_except(self,word_id,count,category_id):
+        return db.session.query(TurkishWord).filter(TurkishWord.id!=word_id,TurkishWord.category_id=category_id).order_by(func.random()).limit(count).all()
 
     def get_by_category_id(self,category_id):
         return db.session.query(TurkishWord).filter_by(category_id=category_id).all()
@@ -98,8 +98,8 @@ class TurkishWordRepository:
         db.session.commit()
 
 class EnglishWordRepository:
-    def get_random_except(self,word_id,count):
-        return db.session.query(EnglishWord).filter(EnglishWord.id!=word_id).order_by(func.random()).limit(count).all()
+    def get_random_except(self,word_id,count,category_id):
+        return db.session.query(EnglishWord).filter(EnglishWord.id!=word_id,EnglishWord.category_id=category_id).order_by(func.random()).limit(count).all()
 
     def get_by_category_id(self,category_id):
         return db.session.query(EnglishWord).filter_by(category_id=category_id).all()
