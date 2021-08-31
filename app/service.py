@@ -1,7 +1,64 @@
-from .repository import TurkishWordRepository,EnglishWordRepository
+from .repository import TurkishWordRepository,EnglishWordRepository,UserRepository,NoteRepository
 from werkzeug.exceptions import Forbidden,NotFound,Unauthorized
 from . import security
 import random
+from flask import request
+
+class NoteService:
+    
+    def __init__(self):
+        self.user_repository=UserRepository()
+        self.note_repository=NoteRepository()
+    
+    def get_all_by_user(self):
+        if security.logged_in():
+            username=security.get_token(request.headers["token"])["username"]
+            user=self.user_repository.get_by_username(username)
+            return self.note_repository.get_all_by_user(user)
+        else:
+            raise Unauthorized("You must log in")
+
+    def get_by_id(self,id):
+        if security.logged_in():
+            note=self.note_repository.get_by_id(id)
+            username=security.get_token(request.headers["token"])["username"]
+            if note.user.username==username:
+                return note
+            else:
+                raise Unauthorized("This note belongs to another user")
+        else:
+            raise Unauthorized("You must log in")
+
+    def add(self,note):
+        if security.logged_in():
+            username=security.get_token(request.headers["token"])["username"]
+            user=self.user_repository.get_by_username(username)
+            note.user=user
+            return self.note_repository.add(note)
+        else:
+            raise Unauthorized("You must log in")
+    
+    def update(self,note):
+        if security.logged_in():
+            username=security.get_token(request.headers["token"])["username"]
+            user=self.get_by_id(note.id).user
+            if user.username==username:
+                return self.note_repository.update(note)
+            else:
+                raise Unauthorized("This note belongs to another user")
+        else:
+            raise Unauthorized("You must log in")
+    
+    def delete_by_id(self,id):
+        if security.logged_in():
+            note=self.note_repository.get_by_id(id)
+            username=security.get_token(request.headers["token"])["username"]
+            if note.user.username==username:
+                self.note_repository.delete_by_id(id)
+            else:
+                raise Unauthorized("This note belongs to another user")
+        else:
+            raise Unauthorized("You must log in")
 
 class TurkishWordService:
     def get_by_category_id(self,category_id):

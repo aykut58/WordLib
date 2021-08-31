@@ -48,3 +48,9 @@ class User(db.Model):
 
     def to_dict(self):
         return {"id":self.id,"email":self.email,"username":self.username,"is_active":self.is_active}
+        
+class Note(db.Model):
+    id=Column(Integer,primary_key=True)
+    text=Column(String(100))
+    user=relation("User")
+    user_id=Column(ForeignKey("user.id"))

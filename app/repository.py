@@ -1,6 +1,29 @@
 from app.database import db
-from app.model import Admin, EnglishWord,TurkishWord,User,Category
+from app.model import Admin, EnglishWord,TurkishWord,User,Category,Note
 from sqlalchemy.sql.expression import func
+
+class NoteRepository:
+
+    def get_all_by_user(self,user):
+        return db.session.query(Note).filter_by(user_id=user.id).all()
+
+    def get_by_id(self,id):
+        return db.session.query(Note).filter_by(id=id).one()
+
+    def add(self,user):
+        user=db.session.merge(user)
+        db.session.commit()
+        return user
+    
+    def update(self,user):
+        user=db.session.merge(user)
+        db.session.commit()
+        return user
+    
+    def delete_by_id(self,id):
+        db.session.query(Note).filter_by(id=id).delete()
+        db.session.commit()
+    
 
 class UserRepository:
 

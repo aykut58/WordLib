@@ -1,4 +1,4 @@
-from .model import Category,TurkishWord,EnglishWord
+from .model import Category,TurkishWord,EnglishWord,Note
 from flask_marshmallow import Marshmallow
 
 marshmallow=Marshmallow()
@@ -7,6 +7,11 @@ class CategorySerializer(marshmallow.Schema):
     class Meta:
         model=Category
         fields=("id","turkish_name","english_name")
+
+class NoteSerializer(marshmallow.Schema):
+    class Meta:
+        model=Note
+        fields=("id","text")
 
 class NestedEnglishWordSerializer(marshmallow.Schema):
     class Meta:

@@ -2,9 +2,9 @@ from flask import jsonify,request,Blueprint
 from werkzeug.exceptions import BadRequest,Unauthorized,Conflict
 from app.repository import UserRepository,AdminRepository,CategoryRepository
 from app.security import authentication,hash_password,create_token,is_token_valid
-from app.model import Category, EnglishWord,TurkishWord,User
-from .serializer import TurkishWordSerializer,EnglishWordSerializer
-from .service import EnglishWordService,TurkishWordService,EnglishExamService,TurkishExamService
+from app.model import Category, EnglishWord,TurkishWord,User,Note
+from .serializer import TurkishWordSerializer,EnglishWordSerializer,NoteSerializer
+from .service import EnglishWordService,TurkishWordService,EnglishExamService,TurkishExamService,NoteService
 
 blueprint=Blueprint("blueprint",__name__)
 user_repository=UserRepository()
@@ -15,9 +15,12 @@ turkish_words_serializer=TurkishWordSerializer(many=True)
 turkish_word_service=TurkishWordService()
 english_word_serializer=EnglishWordSerializer()
 english_words_serializer=EnglishWordSerializer(many=True)
+note_serializer=NoteSerializer()
+notes_serializer=NoteSerializer(many=True)
 english_word_service=EnglishWordService()
 english_exam_service=EnglishExamService()
 turkish_exam_service=TurkishExamService()
+note_service=NoteService()
 
 def check_request_data(*keys):
     if request.get_json()==None:
@@ -26,6 +29,34 @@ def check_request_data(*keys):
         if not key in request.get_json():
             raise BadRequest(key+" not given")
     return True
+
+@blueprint.route("/note")
+def get_notes_by_user():
+    return notes_serializer.jsonify(note_service.get_all_by_user())
+
+@blueprint.route("/note/<id>")
+def get_note_by_id(id):
+    return note_serializer.jsonify(note_service.get_by_id(id))
+
+@blueprint.route("/note/<id>",methods=["DELETE"])
+def delete_note_by_id(id):
+    note_service.delete_by_id(id)
+    return jsonify({"Message":"Succesful"})
+
+@blueprint.route("/note",methods=["POST"])
+def add_note():
+    if check_request_data("text"):
+        text=request.get_json()["text"]
+        note=Note(text=text)
+        return note_serializer.jsonify(note_service.add(note)),201
+
+@blueprint.route("/note",methods=["PUT"])
+def update_note():
+    if check_request_data("text","id"):
+        text=request.get_json()["text"]
+        id=request.get_json()["id"]
+        note=Note(text=text,id=id)
+        return note_serializer.jsonify(note_service.update(note))
 
 @blueprint.route("/exam/english/category/<category_id>")
 def create_english_exam_by_category_id(category_id):
